@@ -46,7 +46,7 @@ func (a *App) routes() {
 
 func (a *App) run(addr string) {
 	fmt.Printf("Server started at %s\n", addr)
-	log.Fatal(http.ListenAndServe(addr, a.Router))
+	log.Fatal(http.ListenAndServe(":"+addr, a.Router))
 }
 
 func initUsers(db *sqlx.DB) controllers.UsersController {
