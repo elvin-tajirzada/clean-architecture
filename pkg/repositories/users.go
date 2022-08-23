@@ -26,7 +26,8 @@ func NewUsersRepository(db *sqlx.DB) UsersRepository {
 
 func (u *usersRepository) GetAllUsers() ([]models.Users, error) {
 	var users []models.Users
-	err := u.DB.Select(&users, "SELECT id, name, email, password, created_at, updated_at from users order by id DESC")
+	err := u.DB.Select(&users, "SELECT public.users.id, public.users.name, public.users.email, public.users.password, "+
+		"public.users.created_at, public.users.updated_at from public.users order by id DESC")
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +36,8 @@ func (u *usersRepository) GetAllUsers() ([]models.Users, error) {
 
 func (u *usersRepository) FindById(id string) (models.Users, error) {
 	var user models.Users
-	err := u.DB.Get(&user, "SELECT id, name, email, password, created_at, updated_at from users WHERE id=$1", id)
+	err := u.DB.Get(&user, "SELECT public.users.id, public.users.name, public.users.email, "+
+		"public.users.password, public.users.created_at, public.users.updated_at from public.users WHERE id=$1", id)
 	if err != nil {
 		return user, err
 	}
@@ -43,7 +45,7 @@ func (u *usersRepository) FindById(id string) (models.Users, error) {
 }
 
 func (u *usersRepository) InsertUser(user *models.Users) error {
-	_, err := u.DB.NamedExec("INSERT INTO users (name, email, password, created_at, updated_at)"+
+	_, err := u.DB.NamedExec("INSERT INTO public.users (name, email, password, created_at, updated_at)"+
 		" VALUES (:name, :email, :password, :created_at, :updated_at)", user)
 	if err != nil {
 		return err
@@ -52,7 +54,7 @@ func (u *usersRepository) InsertUser(user *models.Users) error {
 }
 
 func (u *usersRepository) DeleteUser(id string) error {
-	_, err := u.DB.Exec("DELETE from users WHERE id=$1", id)
+	_, err := u.DB.Exec("DELETE from public.users WHERE id=$1", id)
 	if err != nil {
 		return err
 	}
