@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/elvin-tacirzade/clean-architecture/pkg/app"
 	"github.com/elvin-tacirzade/clean-architecture/pkg/config"
-	_ "github.com/lib/pq"
 	"log"
 )
 

@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 func ConnectPostgres(host, port, user, password, dbName, sslMode string) (*sqlx.DB, error) {
