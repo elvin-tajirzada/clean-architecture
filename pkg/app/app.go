@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/elvin-tacirzade/clean-architecture/pkg/config"
 	"github.com/elvin-tacirzade/clean-architecture/pkg/controllers"
 	"github.com/elvin-tacirzade/clean-architecture/pkg/db"
 	"github.com/elvin-tacirzade/clean-architecture/pkg/repositories"
@@ -26,6 +27,10 @@ func (a *App) Start() {
 
 func (a *App) initialize() {
 	var err error
+	err = config.LoadEnv()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	a.Router = mux.NewRouter()
 

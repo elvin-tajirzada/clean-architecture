@@ -8,7 +8,7 @@ import (
 type (
 	UsersRepository interface {
 		GetAllUsers() ([]models.Users, error)
-		FindById(id string) (models.Users, error)
+		FindById(id string) (*models.Users, error)
 		InsertUser(user *models.Users) error
 		DeleteUser(id string) error
 	}
@@ -34,14 +34,14 @@ func (u *usersRepository) GetAllUsers() ([]models.Users, error) {
 	return users, err
 }
 
-func (u *usersRepository) FindById(id string) (models.Users, error) {
+func (u *usersRepository) FindById(id string) (*models.Users, error) {
 	var user models.Users
 	err := u.DB.Get(&user, "SELECT public.users.id, public.users.name, public.users.email, "+
 		"public.users.password, public.users.created_at, public.users.updated_at from public.users WHERE id=$1", id)
 	if err != nil {
-		return user, err
+		return nil, err
 	}
-	return user, nil
+	return &user, nil
 }
 
 func (u *usersRepository) InsertUser(user *models.Users) error {

@@ -12,7 +12,7 @@ import (
 type (
 	UsersService interface {
 		GetAllUsers() ([]models.Users, error)
-		FindById(r *http.Request) (models.Users, error)
+		FindById(r *http.Request) (*models.Users, error)
 		InsertUser(r *http.Request, validate *validator.Validate) error
 		DeleteUser(r *http.Request) error
 	}
@@ -36,11 +36,11 @@ func (u *usersService) GetAllUsers() ([]models.Users, error) {
 	return users, nil
 }
 
-func (u *usersService) FindById(r *http.Request) (models.Users, error) {
+func (u *usersService) FindById(r *http.Request) (*models.Users, error) {
 	vars := mux.Vars(r)
 	user, err := u.UsersRepository.FindById(vars["id"])
 	if err != nil {
-		return user, err
+		return nil, err
 	}
 	return user, nil
 }
