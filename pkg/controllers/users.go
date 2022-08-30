@@ -56,16 +56,16 @@ func (u *usersController) FindById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *usersController) InsertUser(w http.ResponseWriter, r *http.Request) {
-	err := u.UsersService.InsertUser(r, validate)
-	if err != nil {
-		log.Println(err)
-		helpers.JsonNewEncoder(w, http.StatusBadRequest, map[string]string{
+	response := u.UsersService.InsertUser(r, validate)
+	if response.Error != nil {
+		log.Println(response.Error)
+		helpers.JsonNewEncoder(w, response.StatusCode, map[string]string{
 			"status":  "error",
-			"message": err.Error(),
+			"message": response.Error.Error(),
 		})
 		return
 	}
-	helpers.JsonNewEncoder(w, http.StatusOK, map[string]string{
+	helpers.JsonNewEncoder(w, response.StatusCode, map[string]string{
 		"status":  "ok",
 		"message": "User successfully added",
 	})

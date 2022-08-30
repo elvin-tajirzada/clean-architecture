@@ -13,7 +13,7 @@ type (
 	UsersService interface {
 		GetAllUsers() ([]models.Users, error)
 		FindById(r *http.Request) (*models.Users, error)
-		InsertUser(r *http.Request, validate *validator.Validate) error
+		InsertUser(r *http.Request, validate *validator.Validate) models.Response
 		DeleteUser(r *http.Request) error
 	}
 
@@ -45,7 +45,7 @@ func (u *usersService) FindById(r *http.Request) (*models.Users, error) {
 	return user, nil
 }
 
-func (u *usersService) InsertUser(r *http.Request, validate *validator.Validate) error {
+func (u *usersService) InsertUser(r *http.Request, validate *validator.Validate) models.Response {
 	name := r.PostFormValue("name")
 	email := r.PostFormValue("email")
 	password := r.PostFormValue("password")
@@ -58,18 +58,27 @@ func (u *usersService) InsertUser(r *http.Request, validate *validator.Validate)
 		UpdatedAt: currentTime,
 	}
 	//start validate
-	err := validate.Struct(user)
-	if err != nil {
-		for _, err = range err.(validator.ValidationErrors) {
-			return err
+	validateErr := validate.Struct(user)
+	if validateErr != nil {
+		for _, validateErrMessage := range validateErr.(validator.ValidationErrors) {
+			return models.Response{
+				StatusCode: http.StatusBadRequest,
+				Error:      validateErrMessage,
+			}
 		}
 	}
 	//end validate
-	err = u.UsersRepository.InsertUser(&user)
-	if err != nil {
-		return err
+	insertErr := u.UsersRepository.InsertUser(&user)
+	if insertErr != nil {
+		return models.Response{
+			StatusCode: http.StatusInternalServerError,
+			Error:      insertErr,
+		}
 	}
-	return nil
+	return models.Response{
+		StatusCode: http.StatusCreated,
+		Error:      nil,
+	}
 }
 
 func (u *usersService) DeleteUser(r *http.Request) error {
