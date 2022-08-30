@@ -45,8 +45,8 @@ func (a *App) routes() {
 	usersRoute := initUsers(a.DB)
 	a.Router.HandleFunc("/api/users", usersRoute.GetAllUsers).Methods(http.MethodGet)
 	a.Router.HandleFunc("/api/users/{id:[0-9]+}", usersRoute.FindById).Methods(http.MethodGet)
-	a.Router.HandleFunc("/api/add-user", usersRoute.InsertUser).Methods(http.MethodPost)
-	a.Router.HandleFunc("/api/delete-user/{id:[0-9]+}", usersRoute.DeleteUser).Methods(http.MethodGet)
+	a.Router.HandleFunc("/api/users", usersRoute.InsertUser).Methods(http.MethodPost)
+	a.Router.HandleFunc("/api/users/{id:[0-9]+}", usersRoute.DeleteUser).Methods(http.MethodDelete)
 }
 
 func (a *App) run(addr string) {
